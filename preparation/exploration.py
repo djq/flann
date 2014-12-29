@@ -3,7 +3,9 @@ import nltk
 import pysentiment as ps
 
 # read in text
-text = open('/Users/djq/repos/flann/text/1.txt').read()
+
+
+text = open('../text/1.txt').read()
 
 # split into paragraphs based on newlines
 # this assumes that the text is correctly formatted with a linebreak
@@ -11,16 +13,18 @@ text = open('/Users/djq/repos/flann/text/1.txt').read()
 paragraphs = text.split('\n')
 
 paragraph_sentiment = []
+hiv4 = ps.HIV4()
 for paragraph in paragraphs:
-	# calculate sentiment for each paragraph
-	# index position is used to identify paragraph
-	hiv4 = ps.HIV4()
-	hiv4_tokens = hiv4.tokenize(paragraph)
-	hiv4_score = hiv4.get_score(hiv4_tokens)
-	paragraph_sentiment.append(hiv4_score)
+#    print paragraph
+#	# calculate sentiment for each paragraph
+#	# index position is used to identify paragraph	
+   
+   hiv4_tokens = hiv4.tokenize(paragraph)
+   hiv4_score = hiv4.get_score(hiv4_tokens)
+   paragraph_sentiment.append(hiv4_score)
 
 # store in csv
-outfile = open('/Users/djq/repos/flann/output/data.csv', 'w')
+outfile = open('../output/data.csv', 'w')
 outfile.write('paragraph, polarity\n')
 
 # loop through results and write to csv
