@@ -1,6 +1,7 @@
 import pandas as pd
 import nltk
 import pysentiment as ps
+import re
 
 # read in text
 text = open('../text/1.txt').read()
@@ -20,20 +21,26 @@ for paragraph in paragraphs:
 	# index position is used to identify paragraph
 	hiv4_tokens = hiv4.tokenize(paragraph)
 	hiv4_score = hiv4.get_score(hiv4_tokens)
-	hiv4_score['count'] = len(paragraph)
+
+	# count words
+	list = re.findall("(\S+)", paragraph)
+	hiv4_score['word_count'] = len(list)
+
+	# store sentiment + word count
 	paragraph_sentiment.append(hiv4_score)
 
 # store in csv
 outfile = open('../output/data.csv', 'w')
-outfile.write('paragraph, count, polarity, positive, negative\n')
+outfile.write('paragraph,word_count,polarity,subjectivity,positive,negative\n')
 
 # loop through results and write to csv
 for idx, sentiment in enumerate(paragraph_sentiment):
 	# import ipdb; ipdb.set_trace()
-	csv_string = '{idx},{count},{polarity},{positive},{negative}\n'.format(
+	csv_string = '{idx},{word_count},{polarity},{subjectivity},{positive},{negative}\n'.format(
 		idx=idx,
-		count=sentiment['count'],
+		word_count=sentiment['word_count'],
 		polarity=sentiment['Polarity'],
+		subjectivity=sentiment['Subjectivity'],
 		positive=sentiment['Positive'],
 		negative=sentiment['Negative'])
 	outfile.write(csv_string)
