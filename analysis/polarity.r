@@ -5,8 +5,8 @@ data = read.csv('/Users/djq/repos/flann/output/data.csv')
 
 
 (ggplot(data, aes(paragraph, polarity))
-  + geom_point() + geom_rangeframe()
-  + theme_tufte())
+  + geom_point() + geom_rangeframe())
+
 
 (ggplot(data, aes(paragraph, polarity))
   + geom_line() + geom_rangeframe()
