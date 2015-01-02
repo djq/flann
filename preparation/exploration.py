@@ -3,12 +3,15 @@ import nltk
 import pysentiment as ps
 import re
 
-chapter_lists = [1,12] # currently cleaned chapters
+chapter_lists = [1, 2, 3, 4, 11, 12] # currently cleaned chapters
+# 11 - need to check paragraph order at begining
+# chapter_lists = range(1,13) # testing
+
 hiv4 = ps.HIV4() # create pysentiment HIV4 object (slow)
 
 # prepare CSV file for results
 results = open('../output/data.csv', 'w')
-results.write('chapter,paragraph,word_count,polarity,subjectivity,positive,negative\n')
+results.write('chapter,paragraph,word_count,no_count,yes_count,polarity,subjectivity,positive,negative\n')
 
 
 def summarize_sentiment(results, paragraph_sentiment, chapter):
@@ -17,10 +20,12 @@ def summarize_sentiment(results, paragraph_sentiment, chapter):
 	"""
 	# loop through results and write to csv
 	for idx, sentiment in enumerate(paragraph_sentiment):
-		csv_string = '{chapter},{idx},{word_count},{polarity},{subjectivity},{positive},{negative}\n'.format(
+		csv_string = '{chapter},{idx},{word_count},{no_count},{yes_count},{polarity},{subjectivity},{positive},{negative}\n'.format(
 			chapter=chapter,
 			idx=idx,
 			word_count=sentiment['word_count'],
+			no_count=sentiment['no_count'],
+			yes_count=sentiment['yes_count'],
 			polarity=sentiment['Polarity'],
 			subjectivity=sentiment['Subjectivity'],
 			positive=sentiment['Positive'],
@@ -30,10 +35,13 @@ def summarize_sentiment(results, paragraph_sentiment, chapter):
 
 # loop through chapters and calculate sentiment values
 for chapter in chapter_lists:
-	_file = '../text/{}.txt'.format(chapter)
+
+	# construct file path
+	chapter_file = '../text/{}.txt'.format(chapter)
 	paragraph_sentiment = []
 
-	with open(_file) as f:
+	# read chapter
+	with open(chapter_file) as f:
 		chapter_text = f.read()
 
 		# split into paragraphs based on newlines
@@ -50,11 +58,18 @@ for chapter in chapter_lists:
 			hiv4_tokens = hiv4.tokenize(paragraph)
 			hiv4_score = hiv4.get_score(hiv4_tokens)
 
-			# count words
-			list = re.findall("(\S+)", paragraph)
-			hiv4_score['word_count'] = len(list)
+			# count total words
+			word_list = re.findall("(\S+)", paragraph)
+			hiv4_score['word_count'] = len(word_list)
 
-			# store sentiment + word count
+			# count certain words
+			no_list = re.findall("no", paragraph.lower())
+			hiv4_score['no_count'] = len(no_list)
+
+			yes_list = re.findall("yes", paragraph.lower())
+			hiv4_score['yes_count'] = len(yes_list)
+
+			# store sentiment and word counts in an array
 			paragraph_sentiment.append(hiv4_score)
 
 		# write results to file for this chapter
