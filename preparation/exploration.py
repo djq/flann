@@ -3,8 +3,9 @@ import nltk
 import pysentiment as ps
 import re
 
-chapter_lists = [1, 2, 3, 4, 11, 12] # currently cleaned chapters
-# 11 - need to check paragraph order at begining
+chapter_lists = [1, 2, 3, 4, 5, 9, 10, 11, 12] # currently cleaned chapters
+# 6, 7, 8
+# footnotes for 9 need to be checked
 # chapter_lists = range(1,13) # testing
 
 hiv4 = ps.HIV4() # create pysentiment HIV4 object (slow)
